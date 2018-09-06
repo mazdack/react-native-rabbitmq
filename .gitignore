@@ -43,16 +43,12 @@ buck-out
 .idea
 .gradle
 local.properties
-*.iml
-<<<<<<< HEAD
-/android/
+**/*.iml
 ./android/.idea.
-=======
 android/local.properties
 android/.idea/*
 android/build/*
 android/src/main/gen
->>>>>>> 7b4df90... gitignore
 # Node
 node_modules
 *.log
@@ -60,10 +56,6 @@ node_modules
 /bots/node_modules/
 package-lock.json
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 7b4df90... gitignore
 # OS X
 .DS_Store
 
