@@ -63,7 +63,10 @@
   "bugs": {
     "url": "https://github.com/kegaretail/react-native-rabbitmq/issues"
   },
-  "dependencies": {},
+  "dependencies": {
+    "g": "^2.0.1",
+    "glob": "^7.1.3"
+  },
   "description": "A RabbitMq component for React Native.",
   "devDependencies": {},
   "directories": {},

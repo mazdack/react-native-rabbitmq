@@ -46,9 +46,5 @@ public class RabbitMqConsumer extends DefaultConsumer {
 
         this.connection.onMessage(message_params);
 
-        this.channel.basicAck(envelope.getDeliveryTag(), false);
     }
-
-
-
 }
