@@ -1,6 +1,7 @@
 package nl.kega.reactnativerabbitmq;
 
 import android.util.Log;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +30,7 @@ public class RabbitMqQueue {
 
     private Channel channel;
     private RabbitMqExchange exchange;
+    private String consumerTag;
 
     public RabbitMqQueue (ReactApplicationContext context, Channel channel, ReadableMap queue_condig, ReadableMap arguments){
        
@@ -50,12 +52,35 @@ public class RabbitMqQueue {
             Map<String, Object> consumer_args = toHashMap(this.consumer_arguments);
 
             this.channel.queueDeclare(this.name, this.durable, this.exclusive, this.autodelete, args);
-            this.channel.basicConsume(this.name, false, consumer_args, consumer);
+            this.consumerTag = this.channel.basicConsume(this.name, false, consumer_args, consumer);
 
         } catch (Exception e){
             Log.e("RabbitMqQueue", "Queue error " + e);
             e.printStackTrace();
         }
+    }
+
+    public void basicConsume() {
+      try {
+        RabbitMqConsumer consumer = new RabbitMqConsumer(this.channel, this);
+
+        Map<String, Object> consumer_args = toHashMap(this.consumer_arguments);
+
+        this.consumerTag = this.channel.basicConsume(this.name, false, consumer_args, consumer);
+
+      } catch (Exception e){
+        Log.e("RabbitMqQueue", "Queue error " + e);
+        e.printStackTrace();
+      }
+    }
+
+    public void basicCancel() {
+      try {
+        this.channel.basicCancel(this.consumerTag);
+      } catch (IOException e) {
+        Log.e("RabbitMqQueue", "Queue error " + e);
+        e.printStackTrace();
+      }
     }
 
     public void onMessage(WritableMap message){
@@ -66,7 +91,7 @@ public class RabbitMqQueue {
         this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("RabbitMqQueueEvent", message);
     }
 
-    public void bind(RabbitMqExchange exchange, String routing_key){ 
+    public void bind(RabbitMqExchange exchange, String routing_key){
         try {
             this.exchange = exchange;
             this.routing_key = (routing_key == "" ? this.name : routing_key);

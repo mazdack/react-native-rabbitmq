@@ -217,6 +217,42 @@ class RabbitMqConnection extends ReactContextBaseJavaModule  {
         
     }
 
+    @ReactMethod
+    public void basicConsume(String queue_name) {
+      RabbitMqQueue found_queue = null;
+      for (RabbitMqQueue queue : queues) {
+        if (Objects.equals(queue_name, queue.name)){
+          found_queue = queue;
+        }
+      }
+
+      try {
+        if (!found_queue.equals(null)){
+          found_queue.basicConsume();
+        }
+      } catch (NullPointerException e) {
+        e.printStackTrace();
+      }
+    }
+
+  @ReactMethod
+  public void basicCancel(String queue_name) {
+    RabbitMqQueue found_queue = null;
+    for (RabbitMqQueue queue : queues) {
+      if (Objects.equals(queue_name, queue.name)){
+        found_queue = queue;
+      }
+    }
+
+    try {
+      if (!found_queue.equals(null)){
+        found_queue.basicCancel();
+      }
+    } catch (NullPointerException e) {
+      e.printStackTrace();
+    }
+  }
+
     /*
     @ReactMethod
     public void publishToQueue(String message, String exchange_name, String routing_key) {
@@ -283,6 +319,26 @@ class RabbitMqConnection extends ReactContextBaseJavaModule  {
             this.factory = null;
             this.channel = null;
         } 
+    }
+
+    @ReactMethod
+    public void basicAck(String queueName, int deliveryTag) {
+      try {
+        this.channel.basicAck(deliveryTag, false);
+      } catch (IOException e) {
+        Log.e("RabbitMqConnection", "Basic ack error " + e);
+        e.printStackTrace();
+      }
+    }
+
+    @ReactMethod
+    public void basicNack(String queueName, int deliveryTag, Boolean requeue) {
+      try {
+        this.channel.basicNack(deliveryTag, false, requeue);
+      } catch (IOException e) {
+        Log.e("RabbitMqConnection", "Basic nack error " + e);
+        e.printStackTrace();
+      }
     }
 
     private void onClose(ShutdownSignalException cause) { 
