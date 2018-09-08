@@ -112,4 +112,8 @@ RCT_EXPORT_MODULE();
     [self.channel ack:deliveryTag];
 }
 
+-(void) nack:(NSNumber *)deliveryTag {
+    [self.channel nack:deliveryTag];
+}
+
 @end
