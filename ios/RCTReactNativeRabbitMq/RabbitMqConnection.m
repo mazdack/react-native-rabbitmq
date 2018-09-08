@@ -59,6 +59,7 @@ RCT_EXPORT_METHOD(addQueue:(NSDictionary *) config arguments:(NSDictionary *)arg
 {
     if (self.connected){ 
         self.channel = [self.connection createChannel];
+        [self.channel basicQos:@1 global:NO];
 
         RMQQueueDeclareOptions queue_options = RMQQueueDeclareDurable;
         RabbitMqQueue *queue = [[RabbitMqQueue alloc] initWithConfig:config channel:self.channel bridge:self.bridge];
