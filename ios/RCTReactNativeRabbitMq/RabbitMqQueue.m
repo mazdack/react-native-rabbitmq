@@ -112,8 +112,12 @@ RCT_EXPORT_MODULE();
     [self.channel ack:deliveryTag];
 }
 
--(void) nack:(NSNumber *)deliveryTag {
-    [self.channel nack:deliveryTag];
+-(void) nack:(NSNumber *)deliveryTag requeue:(nonnull BOOL *) requeue {
+    RMQBasicNackOptions options = RMQBasicNackNoOptions;
+    if (requeue) {
+        options = options | RMQBasicNackRequeue;
+    }
+    [self.channel nack:deliveryTag options:options];
 }
 
 @end
