@@ -19,5 +19,5 @@
     - (void) unbind:(nonnull RMQExchange *)exchange routing_key:(NSString *)routing_key;
     - (void) delete;
     - (void) ack: (NSNumber *)deliveryTag;
-    - (void) nack: (NSNumber *)deliveryTag requeue:(bool *)requeue;
+    - (void) nack: (NSNumber *)deliveryTag requeue:(BOOL *)requeue;
 @end
