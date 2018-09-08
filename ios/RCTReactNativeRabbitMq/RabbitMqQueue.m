@@ -7,6 +7,7 @@
     @property (nonatomic, readwrite) id<RMQChannel> channel;
     @property (nonatomic, readwrite) RMQQueueDeclareOptions options;
     @property (nonatomic, readwrite) RCTBridge *bridge;
+    @property (nonatomic, readwrite) NSString *consumerTag;
 @end
 
 @implementation RabbitMqQueue
@@ -68,6 +69,8 @@ RCT_EXPORT_MODULE();
 
             //[self.channel ack:message.deliveryTag];
 
+            self.consumerTag = message.consumerTag;
+
             [self.bridge.eventDispatcher sendAppEventWithName:@"RabbitMqQueueEvent" 
                 body:@{
                     @"name": @"message", 
@@ -107,6 +110,35 @@ RCT_EXPORT_MODULE();
 -(void) delete {
     [self.queue delete:self.options];
 }
+
+-(void) basicCancel {
+    [self.channel basicCancel:self.consumerTag];
+}
+
+-(void) basicConsume {
+    [self.channel basicConsume:self.name
+     options:RMQBasicConsumeNoOptions
+      handler:^(RMQMessage * _Nonnull message) {
+          NSString *body = [[NSString alloc] initWithData:message.body encoding:NSUTF8StringEncoding];
+
+          //[self.channel ack:message.deliveryTag];
+
+          self.consumerTag = message.consumerTag;
+
+          [self.bridge.eventDispatcher sendAppEventWithName:@"RabbitMqQueueEvent"
+              body:@{
+                  @"name": @"message",
+                  @"queue_name": self.name,
+                  @"message": body,
+                  @"routingKey": message.routingKey,
+                  @"exchange": message.exchangeName,
+                  @"consumer_tag": message.consumerTag,
+                  @"delivery_tag": message.deliveryTag
+              }
+          ];
+      }];
+}
+
 
 -(void) ack:(NSNumber *)deliveryTag {
     [self.channel ack:deliveryTag];

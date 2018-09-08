@@ -117,6 +117,24 @@ RCT_EXPORT_METHOD(basicNack:(NSString *)queue_name delivery_tag:(nonnull NSNumbe
     }
 }
 
+RCT_EXPORT_METHOD(basicConsume:(NSString *)queue_name)
+{
+    id queue_id = [self findQueue:queue_name];
+
+    if (queue_id != nil){
+        [queue_id basicConsume];
+    }
+}
+
+RCT_EXPORT_METHOD(basicCancel:(NSString *)queue_name)
+{
+    id queue_id = [self findQueue:queue_name];
+
+    if (queue_id != nil){
+        [queue_id basicCancel];
+    }
+}
+
 RCT_EXPORT_METHOD(addExchange:(NSDictionary *) config)
 {
 
