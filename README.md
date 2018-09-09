@@ -33,7 +33,10 @@ In xcode add a recursive Header Search Path:
 ```
 $(SRCROOT)/Pods
 ```
-
+To do so:
+* find .xcworkspace file in ios folder
+* open it with xcode
+* go to project - build settings and search for Header Search Path
 
 You need to change some things, to make it work:
 
